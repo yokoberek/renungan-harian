@@ -7,23 +7,26 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write  # Tambahkan ini agar GITHUB_TOKEN bisa push
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository content
-        uses: actions/checkout@v4 # Checkout the repository content to github runner.
+        uses: actions/checkout@v4
 
       - name: Setup Python Version
         uses: actions/setup-python@v5
         with:
-          python-version: 3.8 # Install the python version needed
+          python-version: 3.8
 
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip requests beautifulsoup4
 
-      - name: Execute Python script # Run the run.py to get the latest data
+      - name: Execute Python script
         run: python main.py
 
       - name: Check if there are any changes
@@ -47,5 +50,5 @@ jobs:
         if: steps.verify_diff.outputs.changed == 'true'
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
